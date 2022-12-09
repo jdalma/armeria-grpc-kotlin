@@ -4,7 +4,7 @@ syntax = "proto3";
 package grpc.sample;
 
 option java_multiple_files = true;
-option java_package = "com.wert.jvmstub.sample";
+option java_package = "sample";
 
 message SampleRequest {
   string string = 1;
