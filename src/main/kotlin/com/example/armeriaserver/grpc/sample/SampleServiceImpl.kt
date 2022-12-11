@@ -1,9 +1,5 @@
 package com.example.armeriaserver.grpc.sample
 
-import com.wert.jvmstub.sample.Detail
-import com.wert.jvmstub.sample.SampleRequest
-import com.wert.jvmstub.sample.SampleResponse
-import com.wert.jvmstub.sample.SampleServiceGrpc
 import io.grpc.Status
 import io.grpc.stub.StreamObserver
 import mu.KotlinLogging

@@ -1,7 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.io.File
-import java.io.FileInputStream
-import java.util.*
 
 plugins {
 	id("org.springframework.boot") version "2.7.6"
@@ -14,20 +11,8 @@ group = "com.example"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
-val prop = Properties().apply {
-	load(FileInputStream(File(System.getProperty("user.home") + "/.gradle.properties")))
-}
-
 repositories {
 	mavenCentral()
-	maven {
-		url = uri(prop.getProperty("repository.url.public"))
-		isAllowInsecureProtocol = true
-		credentials {
-			username = prop.getProperty("repository.id") as String
-			password = prop.getProperty("repository.password") as String
-		}
-	}
 }
 
 dependencyManagement {
@@ -55,11 +40,6 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-aop")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-
-	/**
-	 * jvm-stub
-	 */
-	implementation("com.wert:jvm-stub:2022.12.07.01@jar")
 
 	/**
 	 * slf4j를 Kotlin 확장

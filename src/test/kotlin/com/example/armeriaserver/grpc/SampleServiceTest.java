@@ -1,7 +1,5 @@
 package com.example.armeriaserver.grpc;
 
-import static com.wert.jvmstub.sample.SampleServiceGrpc.SampleServiceBlockingStub;
-import static com.wert.jvmstub.sample.SampleServiceGrpc.SampleServiceStub;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.awaitility.Awaitility.await;
@@ -9,7 +7,6 @@ import static org.awaitility.Awaitility.await;
 import com.example.armeriaserver.grpc.sample.SampleServiceImpl;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.linecorp.armeria.client.grpc.GrpcClients;
 import com.linecorp.armeria.common.grpc.GrpcSerializationFormats;
@@ -20,11 +17,6 @@ import com.linecorp.armeria.server.logging.AccessLogWriter;
 import com.linecorp.armeria.server.logging.ContentPreviewingService;
 import com.linecorp.armeria.server.logging.LoggingService;
 import com.linecorp.armeria.testing.junit5.server.ServerExtension;
-import com.wert.jvmstub.sample.Detail;
-import com.wert.jvmstub.sample.SampleRequest;
-import com.wert.jvmstub.sample.SampleResponse;
-import com.wert.jvmstub.sample.SampleServiceGrpc.SampleServiceFutureStub;
-import io.grpc.protobuf.StatusProto;
 import io.grpc.stub.StreamObserver;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
