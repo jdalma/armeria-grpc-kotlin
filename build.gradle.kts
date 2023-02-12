@@ -1,6 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.google.protobuf.gradle.*
 
 plugins {
+	id("com.google.protobuf") version "0.8.18"
 	id("org.springframework.boot") version "2.7.6"
 	id("io.spring.dependency-management") version "1.0.15.RELEASE"
 	kotlin("jvm") version "1.7.21"
@@ -61,6 +63,16 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test:3.0.0")
 	testImplementation("com.linecorp.armeria:armeria-junit5")
 	testImplementation("org.awaitility:awaitility:4.2.0")
+
+	/**
+	 * grpc
+	 */
+	implementation("io.grpc:grpc-protobuf:1.50.2")
+	implementation("io.grpc:grpc-stub:1.50.2")
+	compileOnly("jakarta.annotation:jakarta.annotation-api:2.1.0") // Java 9+ compatibility - Do NOT update to 2.0.0
+
+	// https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api
+	implementation("javax.annotation:javax.annotation-api:1.3.2")
 }
 
 tasks.withType<KotlinCompile> {
@@ -72,4 +84,31 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+
+protobuf {
+	protoc {
+		artifact = "com.google.protobuf:protoc:3.19.1"
+	}
+	generatedFilesBaseDir = "${projectDir}/src/generated"
+//	clean {
+//		delete generatedFilesBaseDir
+//	}
+	plugins {
+		id("grpc") {
+			artifact = "io.grpc:protoc-gen-grpc-java:1.50.2"
+		}
+	}
+	generateProtoTasks {
+		ofSourceSet("main").forEach {
+			it.plugins {
+				// Apply the "grpc" plugin whose spec is defined above, without
+				// options. Note the braces cannot be omitted, otherwise the
+				// plugin will not be added. This is because of the implicit way
+				// NamedDomainObjectContainer binds the methods.
+				id("grpc") { }
+			}
+		}
+	}
 }

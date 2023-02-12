@@ -1,4 +1,4 @@
-package com.example.armeriaserver.grpc.sample
+package com.example.armeriaserver.config
 
 import com.linecorp.armeria.internal.common.grpc.GrpcStatus
 import com.linecorp.armeria.server.docs.DocService
@@ -8,27 +8,26 @@ import com.linecorp.armeria.server.logging.ContentPreviewingService
 import com.linecorp.armeria.server.logging.LoggingService
 import com.linecorp.armeria.server.tomcat.TomcatService
 import com.linecorp.armeria.spring.ArmeriaServerConfigurator
+import io.grpc.BindableService
 import io.grpc.protobuf.StatusProto
 import io.grpc.stub.StreamObserver
 import org.springframework.boot.web.embedded.tomcat.TomcatWebServer
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import stub.sample.SampleResponse
 import java.nio.charset.StandardCharsets
 
 
 @Configuration
-class ArmeriaConfig(
-    private val sampleServiceImpl: SampleServiceImpl
-) {
+class ArmeriaConfig{
 
     @Bean
-    fun armeriaServerConfigurator(context: ServletWebServerApplicationContext): ArmeriaServerConfigurator {
-        val grpcService: GrpcService = GrpcService.builder()
-                                    .addService(sampleServiceImpl)
-                                    .build()
-        //          .addService(ProtoReflectionService.newInstance())
-        //            .useBlockingTaskExecutor(true) // blocking 활성화
+    fun armeriaServerConfigurator(context: ServletWebServerApplicationContext, services: List<BindableService>): ArmeriaServerConfigurator {
+        val grpcService: GrpcService =
+            GrpcService.builder().apply {
+                this.addServices(services)
+            }.build()
 
         val container = context.webServer as TomcatWebServer
         container.start()

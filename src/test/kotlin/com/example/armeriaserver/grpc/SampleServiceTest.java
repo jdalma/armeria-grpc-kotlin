@@ -3,10 +3,12 @@ package com.example.armeriaserver.grpc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.awaitility.Awaitility.await;
+import static stub.sample.SampleServiceGrpc.*;
 
 import com.example.armeriaserver.grpc.sample.SampleServiceImpl;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.linecorp.armeria.client.grpc.GrpcClients;
 import com.linecorp.armeria.common.grpc.GrpcSerializationFormats;
@@ -18,10 +20,15 @@ import com.linecorp.armeria.server.logging.ContentPreviewingService;
 import com.linecorp.armeria.server.logging.LoggingService;
 import com.linecorp.armeria.testing.junit5.server.ServerExtension;
 import io.grpc.stub.StreamObserver;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import stub.sample.Detail;
+import stub.sample.SampleRequest;
+import stub.sample.SampleResponse;
+import stub.sample.SampleServiceGrpc;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
@@ -80,6 +87,7 @@ class SampleServiceTest {
             };
 
             asyncStub.sampleUnaryCall(request, streamObserver);
+
             await().untilTrue(completed);
         }
 
@@ -142,7 +150,7 @@ class SampleServiceTest {
                 }
             }, MoreExecutors.directExecutor());
 
-            Futures.addCallback(secondFuture, new FutureCallback<SampleResponse>() {
+            Futures.addCallback(secondFuture, new FutureCallback<>() {
                 @Override
                 public void onSuccess(SampleResponse result) {
                     System.out.println(Thread.currentThread() + " secondFuture [onSuccess]");
@@ -193,7 +201,6 @@ class SampleServiceTest {
                     completed.set(true);
                 }
             };
-
             final StreamObserver<SampleRequest> request = asyncStub.sampleCallClientStream(response);
             // 해당 request의 onNext(), onCompleted()는 채널에 연결된 StreamObserver<SampleRequest> 메소드를 호춣한다.
             for (char e : alphabets.toCharArray()) {
@@ -245,12 +252,12 @@ class SampleServiceTest {
                 }
             };
             asyncStub.sampleCallServerStream(request, streamObserver);
-            await().untilTrue(completed);
             int index = 0;
             while(!queue.isEmpty()) {
                 String result = queue.poll();
                 assertThat(messages.get(index++)).isEqualTo(result);
             }
+            await().untilTrue(completed);
         }
 
         @Test
@@ -279,20 +286,17 @@ class SampleServiceTest {
     @Nested
     @DisplayName("SampleCallBiStream")
     class Describe_SampleCallBiStream {
-
-        @Test
-        @DisplayName("기본(Async) Stub")
-        void async() {
-            final List<String> messages = List.of("first", "second", "third", "fourth");
-            final Queue<String> queue = new ArrayDeque<>();
-            final SampleServiceStub asyncStub = getSampleAsyncClient();
-            final AtomicBoolean completed = new AtomicBoolean();
-            final StreamObserver<SampleResponse> streamObserver = new StreamObserver<>() {
+        private AtomicBoolean completed;
+        private final List<String> messages = List.of("first", "second", "third", "fourth");
+        private StreamObserver<SampleResponse> getResponseStreamObserver() {
+            return new StreamObserver<>() {
+                int index = 0;
                 @Override
                 public void onNext(SampleResponse value) {
-                    queue.offer(value.getMessage());
+                    System.out.println("SampleResponse " + index);
+                    String responseMessage = value.getMessage();
+                    assertThat(responseMessage.contains(messages.get(index++))).isTrue();
                 }
-
                 @Override
                 public void onError(Throwable t) {
                     fail(GrpcStatus.fromThrowable(t).toString());
@@ -303,27 +307,35 @@ class SampleServiceTest {
                     completed.set(true);
                 }
             };
-            final StreamObserver<SampleRequest> request = asyncStub.sampleCallBiStream(streamObserver);
+        }
 
-            int index = 0;
-            while(!queue.isEmpty()) {
-                String result = queue.poll();
-                assertThat(messages.get(index++)).isEqualTo(result);
+        @BeforeEach
+        void setUp() {
+            completed = new AtomicBoolean();
+        }
+
+        @Test
+        @DisplayName("기본(Async) Stub")
+        void async() {
+            final SampleServiceStub asyncStub = getSampleAsyncClient();
+            final StreamObserver<SampleResponse> streamObserver = getResponseStreamObserver();
+            final StreamObserver<SampleRequest> request = asyncStub.sampleCallBiStream(streamObserver);
+            for (String message : messages) {
+                request.onNext(SampleRequest.newBuilder().setString(message).build());
             }
+            request.onCompleted();
 
             await().untilTrue(completed);
         }
 
         @Test
-        @DisplayName("Blocking Stub")
+        @DisplayName("Blocking Stub (not support)")
         void blocking() {
-
         }
 
         @Test
-        @DisplayName("Future Stub")
+        @DisplayName("Future Stub (not support)")
         void future() {
-
         }
     }
 
