@@ -91,10 +91,8 @@ protobuf {
 	protoc {
 		artifact = "com.google.protobuf:protoc:3.19.1"
 	}
-	generatedFilesBaseDir = "${projectDir}/src/generated"
-//	clean {
-//		delete generatedFilesBaseDir
-//	}
+	generatedFilesBaseDir = "${projectDir}/src/main/generated"
+	delete("${projectDir}/src/main/kotlin/com/generated")
 	plugins {
 		id("grpc") {
 			artifact = "io.grpc:protoc-gen-grpc-java:1.50.2"

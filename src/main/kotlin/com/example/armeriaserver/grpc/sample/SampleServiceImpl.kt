@@ -4,10 +4,7 @@ import io.grpc.Status
 import io.grpc.stub.StreamObserver
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
-import stub.sample.Detail
-import stub.sample.SampleRequest
-import stub.sample.SampleResponse
-import stub.sample.SampleServiceGrpc
+import stub.sample.*
 
 private val log = KotlinLogging.logger {  }
 
