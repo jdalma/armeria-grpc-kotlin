@@ -35,7 +35,6 @@ import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@DisplayName("Sample Proto 테스트")
 class SampleServiceTest {
 
     @RegisterExtension

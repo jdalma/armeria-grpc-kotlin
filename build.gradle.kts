@@ -59,7 +59,7 @@ dependencies {
 	 * test
 	 */
 	testImplementation("org.assertj:assertj-core:3.23.1")
-	testImplementation("org.junit.jupiter:junit-jupiter-api")
+	testImplementation("org.junit.jupiter:junit-jupiter")
 	testImplementation("org.springframework.boot:spring-boot-starter-test:3.0.0")
 	testImplementation("com.linecorp.armeria:armeria-junit5")
 	testImplementation("org.awaitility:awaitility:4.2.0")
@@ -82,10 +82,14 @@ tasks.withType<KotlinCompile> {
 	}
 }
 
-tasks.withType<Test> {
-	useJUnitPlatform()
+tasks {
+	val test by getting(Test::class) {
+		useJUnitPlatform()
+		testLogging {
+			events("passed", "skipped", "failed")
+		}
+	}
 }
-
 
 protobuf {
 	protoc {
