@@ -16,7 +16,8 @@
 							"pm.test(\"success\", function(){",
 							"    pm.response.to.have.status(200)",
 							"    pm.response.to.have.body(\"success\")",
-							"});"
+							"});",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -28,7 +29,9 @@
 				"url": {
 					"raw": "host.docker.internal:8081/success",
 					"host": [
-						"localhost"
+						"host",
+						"docker",
+						"internal"
 					],
 					"port": "8081",
 					"path": [
@@ -37,6 +40,41 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "gRPC Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://127.0.0.1",
+			"type": "string"
 		}
 	]
 }
