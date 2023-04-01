@@ -26,7 +26,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8081/success",
+					"raw": "host.docker.internal:8081/success",
 					"host": [
 						"localhost"
 					],
