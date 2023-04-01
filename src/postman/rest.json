@@ -1,13 +1,13 @@
 {
 	"info": {
 		"_postman_id": "c818efad-b549-438a-8901-f66e930c8396",
-		"name": "New Collection",
+		"name": "rest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "20493057"
 	},
 	"item": [
 		{
-			"name": "HTTP request",
+			"name": "success",
 			"event": [
 				{
 					"listen": "test",
@@ -38,14 +38,6 @@
 						"success"
 					]
 				}
-			},
-			"response": []
-		},
-		{
-			"name": "gRPC Request",
-			"request": {
-				"method": "GET",
-				"header": []
 			},
 			"response": []
 		}
