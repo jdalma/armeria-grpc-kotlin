@@ -7,5 +7,6 @@ import org.springframework.boot.runApplication
 class ArmeriaServerApplication
 
 fun main(args: Array<String>) {
+
     runApplication<ArmeriaServerApplication>(*args)
 }
